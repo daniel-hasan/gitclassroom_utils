@@ -1,21 +1,49 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
-from pathlib import Path
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException
 import time
 
-def abre_firefox():
+def set_options_driver(options, arr_options):
+    if not arr_options:
+        arr_options = [
+            "--window-size=1920,1200",
+            "--ignore-certificate-errors",
+            "--disable-extensions",
+            "--no-sandbox",
+            "--disable-dev-shm-usage"
+        ]
+    for option in arr_options:
+        options.add_argument(option)
+    return options
+
+def abre_chrome(arr_options=None):
+    chrome_service = ChromeService(ChromeDriverManager().install())
+
+    chrome_options = set_options_driver( ChromeOptions(), arr_options)
+
+
+    
+    chrome = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    return chrome
+
+def abre_firefox(arr_options=None):
     #profile = webdriver.FirefoxProfile()
     #profile.accept_untrusted_certs = True
 
-    options=Options()
+    options = set_options_driver( FirefoxOptions(), arr_options)
+
+    for option in options:
+        options.add_argument(option)
     options.set_preference('accept_untrusted_certs', True)
     ff = webdriver.Firefox(options=options)
-    ff.implicitly_wait(10) 
+    ff.implicitly_wait(5) 
     return ff
+
 def wait_for(condition_function, infinite_loop = True):
     start_time = time.time()
     while time.time() < start_time + 1000 or infinite_loop:

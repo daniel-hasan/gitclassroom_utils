@@ -1,17 +1,13 @@
 import pytest
 
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+
+
 
 from selenium import webdriver
-
+from .utils import abre_chrome
 #de: https://dev.to/delrayo/executing-selenium-test-with-pythonpytest-using-github-actions-317c
 @pytest.fixture()
 def open_chrome(request):
-    chrome_service = Service(ChromeDriverManager().install())
-
-    chrome_options = Options()
     options = [
         "--headless",
         "--disable-gpu",
@@ -21,10 +17,9 @@ def open_chrome(request):
         "--no-sandbox",
         "--disable-dev-shm-usage"
     ]
-    for option in options:
-        chrome_options.add_argument(option)
+
 
     
-    request.cls.chrome = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    request.cls.chrome = abre_chrome(options)
     yield request.cls.chrome
     request.cls.chrome.close()
