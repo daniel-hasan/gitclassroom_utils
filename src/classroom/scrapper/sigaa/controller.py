@@ -7,6 +7,7 @@ from .main_page import login_sigaa, open_discipline_num
 from .grades import update_grades_data
 def open_portal(browser):
     open_new_page("https://sig.cefetmg.br/sigaa/portais/docente/docente.jsf", browser)
+
 def update_assignments(browser, obj_discipline, callable_update):
     
     #se está na tela de 
@@ -27,10 +28,14 @@ def update_assignments(browser, obj_discipline, callable_update):
         #btn_portal.click()
         num_discipline += 1
 
-def update_tasks():
+def update_tasks(discipline_name = ""):
 
     chrome = abre_chrome_github()
-    for obj_discipline in Discipline.objects.all():
+    lstDisciplines = Discipline.objects.all()
+    if discipline_name:
+        lstDisciplines = lstDisciplines.filter(name = discipline_name)
+
+    for obj_discipline in lstDisciplines:
         update_assignments(chrome, obj_discipline, update_assignments_data)
 
 def update_grades():

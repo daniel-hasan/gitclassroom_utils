@@ -57,7 +57,7 @@ def write_pull_request_eval(browser, student, total_grade):
         else: 
             final_grade = total_grade
 
-        str_avaliacao += "Nota final: "+str(final_grade)
+        str_avaliacao += "Nota final: "+str(final_grade)+"\n"
         str_avaliacao += "Atividades complementares: 0"
         comment_text.send_keys(str_avaliacao)
     return comment_text
@@ -94,16 +94,20 @@ def browse_student_assignment(browser, change_tab, views_tab, git_app):
     repo_user = repo_url.split("/")[-2]
     
     #github_page = f"https://{repo_user}.github.io/{repo_name}"
-    github_view_url = open_github_view(git_app, repo_url)
+    
 
     feedback_tab = browser.current_window_handle
 
 
     browser.switch_to.window(change_tab)
-    change_tab.get(feedback_url+"/files")
+    browser.get(feedback_url+"/files")
 
+    github_view_url = open_github_view(git_app, repo_url)
+    
     browser.switch_to.window(views_tab)
-    views_tab.get(github_view_url)
+
+    
+    browser.get(github_view_url)
     
     browser.switch_to.window(feedback_tab)
     return git_app
@@ -181,8 +185,11 @@ def eval_students_assignment(browser, total_grade):
     while pos_student<len(arr_students):
         student = arr_students[pos_student]
         open_new_page(student["feedback_url"], browser)
+        start = time.time()
+
         git_app = browse_student_assignment(browser, changes_tab, view_tab, git_app)
-        
+        end = time.time()
+        print(f'Tempo: {end-start}')
         student["feedback_url"] = browser.current_url 
         pos_student_per_feedback_url[browser.current_url] = pos_student
 

@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
-from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException
+from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, ElementNotInteractableException
 import time
 
 def set_options_driver(options, arr_options):
@@ -99,12 +99,19 @@ class ApareceuElemento:
         except NoSuchElementException:
             return False
 
+
 class MudaElemento:
     def __init__(self, elemento, valor):
         self.elemento = elemento
         self.valor = valor
     def __call__(self):
-        self.elemento.send_keys(self.valor)
+        if type(self.elemento) == str:
+            elemento_obj = self.browser.find_element(By.CSS_SELECTOR, self.elemento)
+        else:
+            elemento_obj = self.elemento
+        elemento_obj.send_keys(self.valor)
 
-
-        return self.elemento.get_attribute("value") == self.valor
+        try:
+            return elemento_obj.get_attribute("value") == self.valor
+        except:
+            return False

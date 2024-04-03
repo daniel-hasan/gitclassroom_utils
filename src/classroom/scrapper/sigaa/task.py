@@ -4,6 +4,8 @@ from datetime import datetime
 from selenium.webdriver.support.ui import Select
 from classroom.models import Assignment
 from .main_page import open_task_menu
+from datetime import datetime
+from django.utils.timezone import make_aware
 def get_deadline(str_text):
     pattern_deadline = "a ([0-9]{2}/[0-9]{2}/[0-9]{4}) às ([0-9]{2}h[0-9]{2})"
     match = re.search(pattern_deadline,str_text)
@@ -89,7 +91,7 @@ def update_or_create_task(browser, assignment):
     for topic_option in topic_el.find_elements(By.CSS_SELECTOR, "option")[1:]:
         topic_complete_name = topic_option.text
         topic_name = topic_complete_name.split(")")[1].strip()
-        if topic_name.startswith(f"[{assignment.topic_fk.acronym}]"):
+        if f"[{assignment.topic_fk.acronym}]" in topic_name:
             topic_value = topic_option.get_attribute("value")
             break
     if topic_value:
@@ -104,16 +106,17 @@ def update_or_create_task(browser, assignment):
     deadline_min_select.select_by_value(str(assignment.deadline.minute))
     
     #botao de atualizar/inserir
-    browser.find_element(By.CSS_SELECTOR, ".form-actions input[value*='Atualizar'],.botoes input[value*='Cadastrar']")
-    #browser.click()
+    inputAtualizar = browser.find_element(By.CSS_SELECTOR, ".form-actions input[value*='Atualizar'],.botoes input[value*='Cadastrar']")
+    inputAtualizar.click()
 
 def update_assignments_data(browser, obj_discipline):
     #abre o menu e atualiza os dados (se necessario)
     assignments = Assignment.objects.filter(discipline_fk = obj_discipline)
     for assignment in assignments:
-        open_task_menu(browser)
-        to_update = open_update_or_create_task_by_prefix(browser, 
-                                                        f"[{assignment.acronym.upper()}]", 
-                                                         assignment.deadline)
-        if to_update:
-            update_or_create_task(browser, assignment)
+        if assignment.deadline and assignment.deadline > make_aware(datetime.now()):
+            open_task_menu(browser)
+            to_update = open_update_or_create_task_by_prefix(browser, 
+                                                            f"[{assignment.acronym.upper()}]", 
+                                                            assignment.deadline)
+            if to_update:
+                update_or_create_task(browser, assignment)

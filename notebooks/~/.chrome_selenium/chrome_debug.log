@@ -1,9 +1,0 @@
-[185458:185458:1229/213541.056363:WARNING:chrome_main_delegate.cc(667)] This is Chrome version 120.0.6099.71 (not a warning)
-[185458:185458:1229/213541.877732:INFO:policy_logger.cc(144)] :components/enterprise/browser/controller/chrome_browser_cloud_management_controller.cc(168) Starting CBCM Controller Initialization
-[185458:185458:1229/213541.877955:INFO:policy_logger.cc(144)] :components/enterprise/browser/controller/chrome_browser_cloud_management_controller.cc(196) No machine level policy manager exists.
-[185490:185490:1229/213542.202756:WARNING:sandbox_linux.cc(400)] InitializeSandbox() called with multiple threads in process gpu-process.
-[185458:185458:1229/213542.497607:WARNING:bluez_dbus_manager.cc(248)] Floss manager not present, cannot set Floss enable/disable.
-[185458:185458:1229/213552.558557:INFO:CONSOLE(46)] "Uncaught TypeError: Cannot read properties of null (reading 'addEventListener')", source: https://classroom.github.com/assets/application-a9719d4b62137439c4ff741c486b724c9b286819158f154ccff500f4f2a6f740.js (46)
-[185491:185505:1229/213609.676453:WARNING:sqlite_persistent_store_backend_base.cc(198)] Failed to post task from FlushAndNotifyInBackground@net/extras/sqlite/sqlite_persistent_store_backend_base.cc:246 to client_task_runner_.
-[185491:185505:1229/213609.676634:WARNING:sqlite_persistent_store_backend_base.cc(198)] Failed to post task from FlushAndNotifyInBackground@net/extras/sqlite/sqlite_persistent_store_backend_base.cc:246 to client_task_runner_.
-[185458:185458:1229/213609.746930:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.

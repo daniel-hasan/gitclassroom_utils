@@ -23,12 +23,12 @@ class Topic(models.Model):
 
 class Assignment(models.Model):
     discipline_fk = models.ForeignKey(Discipline, on_delete=PROTECT)
-    topic_fk = models.ForeignKey(Topic, on_delete=PROTECT)
+    topic_fk = models.ForeignKey(Topic, on_delete=PROTECT, null=True)
     acronym = models.CharField(max_length=4)
     name = models.CharField(max_length=50)
     assignment_url = models.CharField(max_length=255, unique=True)
     invitation_url = models.CharField(max_length=255, unique=True)
-    deadline = models.DateTimeField()
+    deadline = models.DateTimeField(null=True)
     
     total_auto_grade = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     total_grade = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)

@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from classroom.views import *
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls), 
+    path('list_assignments/<path:discipline_name>', get_discipline_assignments, 
+            name="list_assignments"),
+
+    path('updateAssignments/<path:discipline_name>', update_assignments, 
+            name="update_assignments"),
 ]

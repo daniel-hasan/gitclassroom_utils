@@ -2,7 +2,7 @@ from datetime import datetime
 from dateutil import tz
 from selenium.webdriver.common.by import By
 from selenium_utils.utils import *
-from selenium_utils.utils import open_new_page
+from selenium.webdriver.common.keys import Keys
 
 def get_assignment_data(browser):
     assignment_link = browser.find_element(By.CSS_SELECTOR, 
@@ -23,16 +23,17 @@ def get_assignment_data(browser):
     if not deadline:
         #cria url de configuração
         current_assignment = browser.current_url
-        arr_cur_assignment_parts = current_assignment.split("/")
-        arr_cur_assignment_parts[-2] = "new_assignments"
-        edit_assignment_url = "/".join(arr_cur_assignment_parts)+"/settings"
+        open_assignment_settings(browser, current_assignment)
         
-        open_new_page(edit_assignment_url, browser)
+        
         
         #obtem deadline
         deadline_el = browser.find_element(By.ID, "assignment_deadline_deadline_at") 
         str_deadline = deadline_el.get_attribute("value")
-        deadline = datetime.strptime(str_deadline, "%Y-%m-%dT%H:%M")
+        deadline = None
+        if str_deadline:
+            deadline = datetime.strptime(str_deadline, "%Y-%m-%dT%H:%M")
+
         
         open_new_page(current_assignment, browser)
 
@@ -40,6 +41,31 @@ def get_assignment_data(browser):
     return {"invitation_url":assignment_link,
             "deadline":deadline
              }
+def set_deadline(browser, deadline):
+    deadline_el = browser.find_element(By.ID, "assignment_deadline_deadline_at")
+
+    str_date_deadline = deadline.strftime("%m%d%Y")
+    int_hour_deadline = int(deadline.strftime("%H"))
+    int_min_deadline = deadline.strftime("%M")
+    str_pm_am = "A" if int_hour_deadline <= 12 else "P"
+    if int_hour_deadline > 13:
+        int_hour_deadline = int_hour_deadline-12
+
+    deadline_el.send_keys(str_date_deadline)
+    deadline_el.send_keys(Keys.RIGHT)
+    deadline_el.send_keys(f"{int_hour_deadline}{int_min_deadline}{str_pm_am}")
+    
+
+def update_assignment(browser):
+    click_through_to_new_page_by_css("button[type='submit']", browser)
+
+def open_assignment_settings(browser, assignment_url):
+    arr_cur_assignment_parts = assignment_url.split("/")
+    arr_cur_assignment_parts[-2] = "new_assignments"
+    edit_assignment_url = "/".join(arr_cur_assignment_parts)+"/settings"
+    open_new_page(edit_assignment_url, browser)
+    return edit_assignment_url
+
 def get_assignments_links(browser):
     new_assignment_el = browser.find_element(By.CSS_SELECTOR, "a[href$='/new-assignment']")
     
@@ -69,8 +95,14 @@ def get_assignments_from_classroom(browser, classroom_url):
         open_new_page(assignment_link, browser)
         topic_acronym, name_points = assignment_name.split("]")
         
-        name, total_points = name_points.split("(")
-        total_points = total_points.replace("p)","")
+        arr_name_points = name_points.split("(")
+        total_points = None
+        if len(arr_name_points)>1:
+            name, total_points = name_points.split("(")
+            total_points = total_points.replace("p)","")
+        else: 
+            name = name_points
+
         name = name.strip()
         
         topic, acronym = topic_acronym[1:].split("-")

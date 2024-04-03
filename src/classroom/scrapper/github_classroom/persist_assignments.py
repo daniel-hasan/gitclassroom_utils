@@ -15,7 +15,7 @@ def update_assignment_from_class(browser, class_complete_name, class_link):
     
     class_code = class_code[1:]
     class_name = class_name.strip()
-    
+    print(f"Class link: {class_link}")
     obj_discipline, created = Discipline.objects.get_or_create(url = class_link, 
                                 defaults={"name":class_name,
                                         "code":class_code})
@@ -36,14 +36,14 @@ def update_assignment_from_class(browser, class_complete_name, class_link):
                                                                     "acronym":assignment_data["acronym"],
                                                                     "name":assignment_data["name"],
                                                                     "assignment_url":assignment_data["link"],
-                                                                    "deadline":make_aware(assignment_data["deadline"]),
+                                                                    "deadline":make_aware(assignment_data["deadline"]) if assignment_data["deadline"] else None,
                                                                     "total_grade":assignment_data["total_grade"]})
 
         obj_assign.topic_fk = obj_assign_topic
         obj_assign.acronym = assignment_data["acronym"]
         obj_assign.name =  assignment_data["name"]
         obj_assign.assignment_url =  assignment_data["link"]
-        obj_assign.deadline =  make_aware(assignment_data["deadline"])
+        obj_assign.deadline =  make_aware(assignment_data["deadline"]) if assignment_data["deadline"] else None 
         obj_assign.total_grade =assignment_data["total_grade"]
         obj_assign.save()
 
