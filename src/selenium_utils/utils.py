@@ -57,20 +57,21 @@ def wait_for(condition_function, infinite_loop = True):
         'Timeout waiting'
         )
 
-def open_new_page(url, browser):
+def open_new_page(url, browser, get_assync=False):
     any_element = browser.find_element(By.CSS_SELECTOR, "*")
     browser.get(url)
     
-    def link_has_gone_stale():
-        try:
-            # poll the link with an arbitrary call
-            any_element.find_element(By.ID, "doesnotmatter")
-            return False
-        except StaleElementReferenceException:
-            return True
-        except NoSuchElementException:
-            return False
-    wait_for(link_has_gone_stale)
+    if not get_assync:
+        def link_has_gone_stale():
+            try:
+                # poll the link with an arbitrary call
+                any_element.find_element(By.ID, "doesnotmatter")
+                return False
+            except StaleElementReferenceException:
+                return True
+            except NoSuchElementException:
+                return False
+        wait_for(link_has_gone_stale)
 def click_through_to_new_page_by_css(css_selector, browser):
     link = browser.find_element(By.CSS_SELECTOR, css_selector)
     link.click()

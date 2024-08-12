@@ -101,12 +101,13 @@ def browse_student_assignment(browser, change_tab, views_tab, git_app):
 
     browser.switch_to.window(change_tab)
     browser.get(feedback_url+"/files")
+    #open_new_page(feedback_url+"/files", browser)
 
-    github_view_url = open_github_view(git_app, repo_url)
+    
     
     browser.switch_to.window(views_tab)
 
-    
+    github_view_url = open_github_view(git_app, repo_url)
     browser.get(github_view_url)
     
     browser.switch_to.window(feedback_tab)
@@ -175,15 +176,30 @@ def get_final_grade(browser):
                     dict_entries[grade_entry] = Decimal(grade_val)
     return dict_entries["nota final"], dict_entries["atividades complementares"]
 
-def eval_students_assignment(browser, total_grade):
-
+def eval_students_assignment(browser, total_grade, first_student_name_to_eval=None):
+    print("Veio aqui")
     arr_students = get_students_from_assignment(browser)
     changes_tab, view_tab  = create_changes_and_view_tabs(browser)
     pos_student = 0
     pos_student_per_feedback_url = {}
     git_app = None
+    print(f"Encontrou {len(arr_students)} estudantes")
+    #caso o first_student_repo_to_eval for none
+    #consideramos que jjá encontrou o primeiro aluno
+    #assim, será coletado todos
+    found_first_student = first_student_name_to_eval is None
+
     while pos_student<len(arr_students):
         student = arr_students[pos_student]
+        #apenas coleta o estudante a partir do primeiro a avaliar
+        if not found_first_student:
+            if first_student_name_to_eval.lower() in student["name"].lower():
+                found_first_student = True
+            else:
+                print(f"Estudante {student['name']} ignorado")
+                pos_student += 1
+                continue
+        
         open_new_page(student["feedback_url"], browser)
         start = time.time()
 

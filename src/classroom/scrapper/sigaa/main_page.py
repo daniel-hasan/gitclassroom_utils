@@ -32,6 +32,8 @@ def open_discipline_num(browser, obj_discipline, num_discipline):
                 return True
             
             discipline_counter += 1
+        else:
+            print(f"Disciplina {discipline_link.text} não é igual a {obj_discipline.code}")
     return False
 
 def login_sigaa(browser):

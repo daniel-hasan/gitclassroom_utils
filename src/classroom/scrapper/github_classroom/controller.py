@@ -19,9 +19,9 @@ def update_tasks(discipline_starts_with=""):
         if class_complete_name.startswith(discipline_starts_with):
             update_assignment_from_class(browser, class_complete_name, class_link)
 
-def update_grades(class_code, assignment_acronym):
+def update_grades(class_code, assignment_acronym, first_student_name_to_eval=None):
     browser = abre_chrome_github()
-    eval_student(browser, class_code, assignment_acronym)
+    eval_student(browser, class_code, assignment_acronym, first_student_name_to_eval)
     
 
 def update_classroom_assignment_deadlines(discipline_name, from_date):

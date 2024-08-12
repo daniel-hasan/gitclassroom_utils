@@ -38,7 +38,11 @@ def update_tasks(discipline_name = ""):
     for obj_discipline in lstDisciplines:
         update_assignments(chrome, obj_discipline, update_assignments_data)
 
-def update_grades():
+def update_grades(discipline_code = None):
     chrome = abre_chrome_github()
-    for obj_discipline in Discipline.objects.all():
+    disciplines =  Discipline.objects.all()
+    if discipline_code:
+        disciplines = disciplines.filter(code__iexact = discipline_code)
+    print(f"Num disciplines: {len(list(disciplines))}")
+    for obj_discipline in disciplines:
         update_assignments(chrome, obj_discipline, update_grades_data)
