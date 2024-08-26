@@ -12,7 +12,11 @@ def get_students_from_assignment(browser):
         student_name_id = student_assignment.find_element(By.CSS_SELECTOR, 
                                                         "span.h5")\
                                         .text
-        student_name, student_id = student_name_id.split("-")
+        try:
+            student_name, student_id = student_name_id.split("-")
+        except ValueError:
+            print(f"***** Não foi possivel coletar do aluno: {student_name_id}")
+            continue
         student_name = student_name.strip()
         student_id = student_id.strip()
 
